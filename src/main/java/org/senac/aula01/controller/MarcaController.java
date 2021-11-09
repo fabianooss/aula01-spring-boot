@@ -4,6 +4,7 @@ import org.apache.coyote.Response;
 import org.senac.aula01.entity.Marca;
 import org.senac.aula01.repository.MarcaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,29 +22,14 @@ public class MarcaController {
     @Autowired
     private MarcaRepository marcaRepository;
 
-
-    static List<Marca> marcas = new ArrayList<>();
-
-    static {
-        Marca m = new Marca();
-        m.setId(1L);
-        m.setNome("VW");
-        marcas.add(m);
-
-        m = new Marca();
-        m.setId(2L);
-        m.setNome("Ford");
-        marcas.add(m);
-
-        m = new Marca();
-        m.setId(3L);
-        m.setNome("GM");
-        marcas.add(m);
-    }
-
     @GetMapping
-    public List<Marca> get(){
-        return marcaRepository.findAll();
+    public List<Marca> get(@RequestParam(required = false, defaultValue = "nome") String orderField,
+                           @RequestParam(required = false) String filter){
+        if (filter != null) {
+            return marcaRepository.findByNomeContainingOrderByIdDesc(filter);
+        }
+        Sort order = Sort.by(Sort.Direction.ASC, orderField);
+        return marcaRepository.findAll(order);
 
     }
 
@@ -56,6 +42,7 @@ public class MarcaController {
         }
         return ResponseEntity.badRequest().build();
     }
+
 
     @PostMapping
     public ResponseEntity<Marca> salvar(@RequestBody Marca marca) {
