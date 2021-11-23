@@ -1,6 +1,9 @@
 package org.senac.aula01.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.util.List;
 
@@ -11,14 +14,20 @@ public class Carro implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     private String nome;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
+
         name = "FK_MARCA",
         foreignKey = @ForeignKey(name = "none", value = ConstraintMode.NO_CONSTRAINT)
     )
+    @NotNull
     private Marca marca;
+
+    @Positive
+    private Double valor;
 
     @ManyToMany
     private List<Opcional> opcionais;
@@ -64,5 +73,13 @@ public class Carro implements Serializable {
 
     public void setAvaliacoes(List<Avaliacao> avaliacoes) {
         this.avaliacoes = avaliacoes;
+    }
+
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 }

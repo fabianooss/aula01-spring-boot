@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,7 @@ public class CarroController {
     private CarroRepository repository;
 
     @PostMapping
-    public ResponseEntity<Carro> save(@RequestBody Carro carro) {
+    public ResponseEntity<Carro> save(@RequestBody @Valid Carro carro) {
         if (carro.getAvaliacoes() != null) {
             carro.getAvaliacoes().stream().forEach(a -> a.setCarro(carro));
         }
@@ -26,7 +27,7 @@ public class CarroController {
 
     @GetMapping
     public List<Carro> findAll() {
-        return repository.findAll();
+        return repository.findAllWithMarca();
     }
 
 }
